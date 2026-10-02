@@ -1,0 +1,286 @@
+\documentclass[a4paper]{article}
+
+\usepackage[landscape,margin=1cm]{geometry}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,shapes.geometric}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+
+{\Large\bfseries Diagramma dei casi d'uso HouseFinder}
+
+\vspace{0.5cm}
+
+\begin{tikzpicture}[
+    font=\small,
+    usecase/.style={
+        ellipse,
+        draw,
+        minimum width=3.2cm,
+        minimum height=0.9cm,
+        align=center
+    },
+    assoc/.style={
+        draw,
+        thick
+    },
+    action/.style={
+        draw,
+        dashed,
+        -{Stealth[length=2.5mm]},
+        thick
+    },
+    inherit/.style={
+        draw,
+        -{Stealth[length=3mm]},
+        thick
+    }
+]
+
+% ============================================================
+% SISTEMA - UN SOLO RETTANGOLO
+% ============================================================
+
+\draw[thick]
+    (2,-1)
+    rectangle
+    (16,-10);
+
+\node[
+    anchor=north west,
+    font=\bfseries
+] at (2.2,-1.2)
+{HouseFinder};
+
+
+% ============================================================
+% ATTORI
+% ============================================================
+
+% ------------------------------------------------------------
+% UTENTE
+% ------------------------------------------------------------
+
+\draw (0,-3) circle (0.13);
+\draw (0,-3.13) -- (0,-3.7);
+\draw (-0.35,-3.3) -- (0,-3.23) -- (0.35,-3.3);
+\draw (0,-3.7) -- (-0.3,-4.1);
+\draw (0,-3.7) -- (0.3,-4.1);
+
+\node[font=\bfseries]
+    at (0,-2.6)
+{UTENTE};
+
+
+% ------------------------------------------------------------
+% UTENTE NON REGISTRATO
+% ------------------------------------------------------------
+
+\draw (0,-7.5) circle (0.13);
+\draw (0,-7.63) -- (0,-8.2);
+\draw (-0.35,-7.8) -- (0,-7.73) -- (0.35,-7.8);
+\draw (0,-8.2) -- (-0.3,-8.6);
+\draw (0,-8.2) -- (0.3,-8.6);
+
+\node[
+    font=\bfseries,
+    align=center
+] at (0,-7)
+{UTENTE\\NON REG.};
+
+
+% ------------------------------------------------------------
+% ADMIN
+% ------------------------------------------------------------
+
+\draw (18,-3) circle (0.13);
+\draw (18,-3.13) -- (18,-3.7);
+\draw (17.65,-3.3) -- (18,-3.23) -- (18.35,-3.3);
+\draw (18,-3.7) -- (17.7,-4.1);
+\draw (18,-3.7) -- (18.3,-4.1);
+
+\node[font=\bfseries]
+    at (18,-2.6)
+{ADMIN};
+
+
+% ============================================================
+% COLONNA SINISTRA
+% ============================================================
+
+\node[usecase] (registrazione)
+    at (5,-2.5)
+{REGISTRAZIONE};
+
+\node[usecase] (pubblicazione)
+    at (5,-4.5)
+{PUBBLICAZIONE};
+
+\node[usecase] (recensioni)
+    at (5,-6.5)
+{RECENSIONI};
+
+\node[usecase] (ricerca)
+    at (5,-8.5)
+{RICERCA};
+
+
+% ============================================================
+% COLONNA CENTRALE
+% ============================================================
+
+\node[usecase] (delete)
+    at (10,-2.5)
+{DELETE ACCOUNT};
+
+\node[usecase] (cancella)
+    at (10,-4.5)
+{CANCELLA};
+
+\node[usecase] (modifica)
+    at (10,-6.5)
+{MODIFICA};
+
+\node[usecase] (contacts)
+    at (10,-8.5)
+{CONTACTS FORM};
+
+
+% ============================================================
+% COLONNA DESTRA - ADMIN
+% ============================================================
+
+\node[usecase] (profili)
+    at (14,-3)
+{GESTIONE PROFILI};
+
+\node[usecase] (annunci)
+    at (14,-5)
+{GESTIONE ANNUNCI};
+
+\node[usecase] (gestrec)
+    at (14,-7)
+{GESTIONE RECENSIONI};
+
+
+% ============================================================
+% UTENTE -> CASI D'USO
+% ============================================================
+
+\draw[assoc]
+    (0.35,-3.2)
+    --
+    (registrazione.west);
+
+\draw[assoc]
+    (0.35,-3.35)
+    --
+    (pubblicazione.west);
+
+\draw[assoc]
+    (0.35,-3.5)
+    --
+    (recensioni.west);
+
+
+% ============================================================
+% REGISTRAZIONE -> DELETE ACCOUNT
+% ============================================================
+
+\draw[action]
+    (registrazione.east)
+    --
+    (delete.west);
+
+
+% ============================================================
+% PUBBLICAZIONE -> CANCELLA
+% ============================================================
+
+\draw[action]
+    (pubblicazione.east)
+    --
+    (cancella.west);
+
+
+% ============================================================
+% PUBBLICAZIONE -> MODIFICA
+% ============================================================
+
+\draw[action]
+    (pubblicazione.south east)
+    --
+    (modifica.west);
+
+
+% ============================================================
+% UTENTE NON REG. -> RICERCA / CONTACTS FORM
+% ============================================================
+
+\draw[assoc]
+    (0.35,-7.7)
+    --
+    (ricerca.west);
+
+\draw[assoc]
+    (0.35,-7.9)
+    --
+    (contacts.west);
+
+
+% ============================================================
+% ADMIN -> CASI D'USO
+% ============================================================
+
+\draw[assoc]
+    (17.65,-3.2)
+    --
+    (profili.east);
+
+\draw[assoc]
+    (17.65,-3.35)
+    --
+    (annunci.east);
+
+\draw[assoc]
+    (17.65,-3.5)
+    --
+    (gestrec.east);
+
+
+% ============================================================
+% EREDITARIETA'
+%
+% NON REG. -> UTENTE -> ADMIN
+%
+% Tutte fuori dal rettangolo.
+% ============================================================
+
+% UTENTE NON REG. -> UTENTE
+\draw[inherit]
+    (-0.7,-7.5)
+    --
+    (-0.7,-3);
+
+
+% UTENTE -> ADMIN
+% Percorso perfettamente rettangolare sopra HouseFinder
+
+\draw[inherit]
+    (0,-2.85)
+    --
+    (0,-0.3)
+    --
+    (18,-0.3)
+    --
+    (18,-2.85);
+
+
+\end{tikzpicture}
+
+\end{center}
+
+\end{document}
