@@ -1,0 +1,133 @@
+
+\documentclass[a4paper,landscape]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[italian]{babel}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.multipart}
+
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+\Large\textbf{Diagramma delle classi HouseFinder}
+\end{center}
+
+\begin{center}
+\begin{tikzpicture}[
+    scale=0.85,
+    transform shape,
+    classe/.style={
+        draw,
+        rectangle split,
+        rectangle split parts=3,
+        rectangle split part align={center,left,left},
+        text width=3.5cm,
+        font=\small,
+        inner sep=5pt
+    },
+    relazione/.style={draw, thick},
+    eredita/.style={draw, thick, -{Triangle[open,length=8pt]}}
+]
+
+% CLASSI
+
+\node[classe] (utente) at (0,0) {
+    \textbf{Utente}
+    \nodepart{second}
+    - idUtente : int\\
+    - nome : string\\
+    - email : string\\
+    - password : string
+    \nodepart{third}
+    + registrati() : void\\
+    + login() : boolean\\
+    + eliminaAccount() : void
+};
+
+\node[classe] (admin) at (7,0) {
+    \textbf{Admin}
+    \nodepart{second}
+    - idAdmin : int\\
+    - email : string
+    \nodepart{third}
+    + gestisciProfili() : void\\
+    + gestisciAnnunci() : void\\
+    + gestisciRecensioni() : void
+};
+
+\node[classe] (annuncio) at (0,-7) {
+    \textbf{Annuncio}
+    \nodepart{second}
+    - idAnnuncio : int\\
+    - titolo : string\\
+    - descrizione : string\\
+    - prezzo : double\\
+    - indirizzo : string
+    \nodepart{third}
+    + pubblica() : void\\
+    + modifica() : void\\
+    + cancella() : void
+};
+
+\node[classe] (recensione) at (7,-7) {
+    \textbf{Recensione}
+    \nodepart{second}
+    - idRecensione : int\\
+    - voto : int\\
+    - commento : string
+    \nodepart{third}
+    + scriviRecensione() : void\\
+    + eliminaRecensione() : void
+};
+
+\node[classe] (contatto) at (13,-7) {
+    \textbf{Contatto}
+    \nodepart{second}
+    - idContatto : int\\
+    - nome : string\\
+    - email : string\\
+    - messaggio : string
+    \nodepart{third}
+    + inviaMessaggio() : void
+};
+
+% RELAZIONI
+
+% Admin eredita da Utente
+\draw[eredita] (admin.west) -- (utente.east);
+
+% Utente pubblica annunci
+\draw[relazione]
+(utente.south) -- (annuncio.north)
+node[midway,left] {pubblica}
+node[pos=0.15,right] {1}
+node[pos=0.85,right] {0..*};
+
+% Utente scrive recensioni
+\draw[relazione]
+(utente.south east) -- (recensione.north west)
+node[midway,above,sloped] {scrive}
+node[pos=0.15,above] {1}
+node[pos=0.85,above] {0..*};
+
+% Annuncio riceve recensioni
+\draw[relazione]
+(annuncio.east) -- (recensione.west)
+node[midway,above] {riceve}
+node[pos=0.15,below] {1}
+node[pos=0.85,below] {0..*};
+
+% Contatti relativi agli annunci
+\draw[relazione]
+(recensione.east) -- (contatto.west)
+node[midway,above] {associazione}
+node[pos=0.15,below] {0..*}
+node[pos=0.85,below] {0..*};
+
+\end{tikzpicture}
+\end{center}
+
+\end{document}
